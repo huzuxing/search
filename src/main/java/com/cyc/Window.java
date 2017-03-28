@@ -6,14 +6,8 @@ import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.TextArea;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -108,6 +102,7 @@ public class Window {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
+	@SuppressWarnings("resource")
 	private void uploadFile(Component obj) {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setMultiSelectionEnabled(false);
@@ -119,11 +114,10 @@ public class Window {
 				return;
 			file1.setText(file.getName());
 			try {
-				InputStream is = new FileInputStream(file);
 				OPCPackage opcPackage = POIXMLDocument.openPackage(file.getAbsolutePath());
 				POIXMLTextExtractor wx = new XWPFWordExtractor(opcPackage);
-				System.out.println(wx.getText().length());
 				content.setText(wx.getText());
+				new Searcher().search(wx.getText());
 			} catch (IOException | XmlException | OpenXML4JException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
